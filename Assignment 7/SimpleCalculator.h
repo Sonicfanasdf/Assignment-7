@@ -16,7 +16,7 @@ public:
 	void setExpression(string newString);
 	string getExpression() const;
 	void calculatorMenu();
-	bool checkParenthesis(const string& expression);
-	double displayCalculation(stack<double>& numbers, stack<char>& operators,const string& expression);
+	//bool checkParenthesis(const string& expression);
+	double displayCalculation(stack<double>& numbers, stack<char>& operators,istream& ins);
 	void evaluateExpression(stack<double>& numbers, stack<char>& operators);
 };

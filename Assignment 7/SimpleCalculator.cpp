@@ -24,7 +24,7 @@ void SimpleCalculator::calculatorMenu()
 	cout << "\n\t1> Simple Calculator\n";
 	cout << string(100, char(196)) << endl;
 
-	calc.setExpression(inputString("\tType a fully parenthesized arithmetic expression:\n\n", true));
+	//calc.setExpression(inputString("\tType a fully parenthesized arithmetic expression:\n\n", true));
 
 	/*cout << isdigit(calc.getExpression()[1]);
 
@@ -32,85 +32,132 @@ void SimpleCalculator::calculatorMenu()
 
 	cout << number;*/
 
-	if (checkParenthesis(calc.getExpression()))
+	/*if (checkParenthesis(calc.getExpression()))
 	{
 		cout << "fail";
-	}
-	else
-	{
-		cout << endl << displayCalculation(numbers, operators, calc.getExpression());
-	}
+	}*/
+	
+	
+	cout << endl << displayCalculation(numbers, operators, cin);
 	cout << endl;
 
 	system("pause");
 	system("cls");
 }
-bool SimpleCalculator::checkParenthesis(const string& expression)
+//bool SimpleCalculator::checkParenthesis(const string& expression)
+//{
+//	const char LEFT_PARENTHESIS = '(';
+//	const char RIGHT_PARENTHESIS = ')';
+//	stack<char> check;
+//	char current;
+//	bool fail = false;
+//
+//	if (expression[0] != LEFT_PARENTHESIS)
+//	{
+//		fail = true;
+//	}
+//
+//	for (int i = 0; !fail && (i < expression.size()); i++)
+//	{
+//		current = expression[i];
+//
+//		if (current == LEFT_PARENTHESIS)
+//		{
+//			check.push(current);
+//		}
+//		else if (current == RIGHT_PARENTHESIS && !check.empty())
+//		{
+//			check.pop();
+//		}
+//		else if (current == RIGHT_PARENTHESIS && check.empty())
+//		{
+//			fail = true;
+//		}
+//	}
+//
+//	if (expression[expression.size() - 1] != RIGHT_PARENTHESIS)
+//	{
+//		fail = true;
+//	}
+//	else if (!check.empty())
+//	{
+//		fail = true;
+//	}
+//
+//	return fail;
+//}
+double SimpleCalculator::displayCalculation(stack<double>& numbers, stack<char>& operators, istream& ins)
 {
+	const char RIGHT_PARENTHESIS = ')';
 	const char LEFT_PARENTHESIS = '(';
-	const char RIGHT_PARENTHESIS = ')';
-	stack<char> check;
-	char current;
-	bool fail = false;
-
-	if (expression[0] != LEFT_PARENTHESIS)
-	{
-		fail = true;
-	}
-
-	for (int i = 0; !fail && (i < expression.size()); i++)
-	{
-		current = expression[i];
-
-		if (current == LEFT_PARENTHESIS)
-		{
-			check.push(current);
-		}
-		else if (current == RIGHT_PARENTHESIS && !check.empty())
-		{
-			check.pop();
-		}
-		else if (current == RIGHT_PARENTHESIS && check.empty())
-		{
-			fail = true;
-		}
-	}
-
-	if (expression[expression.size() - 1] != RIGHT_PARENTHESIS)
-	{
-		fail = true;
-	}
-	else if (!check.empty())
-	{
-		fail = true;
-	}
-
-	return fail;
-}
-double SimpleCalculator::displayCalculation(stack<double>& numbers, stack<char>& operators, const string& expression)
-{
-	const char RIGHT_PARENTHESIS = ')';
 	const char DECIMAL = '.';
 	double number;
 	char operation;
 
-	for (int i = 0; i < expression.size(); i++)
+	while (ins && ins.peek() != '\n')
 	{
-		if (isdigit(expression[i]) || expression[i] == DECIMAL)
+		if (isdigit(ins.peek()) || ins.peek() == DECIMAL)
 		{
-			number = expression[i];
+			ins >> number;
 			numbers.push(number);
 		}
-		else if (expression[i] == '+' || expression[i] == '-' || expression[i] == '*' || expression[i] == '/')
+		else if (ins.peek() == '+' || ins.peek() == '-')
 		{
-			operation = expression[i];
+			ins >> operation;
 			operators.push(operation);
 		}
-		else if (expression[i] == RIGHT_PARENTHESIS)
+		else if (ins.peek() == RIGHT_PARENTHESIS && !operators.empty())
+		{
+			ins.ignore();
+			evaluateExpression(numbers, operators);
+		}
+		else if (ins.peek() == '*' || ins.peek() == '/')
+		{
+			ins >> operation;
+			operators.push(operation);
+			
+
+			if (ins.peek() == LEFT_PARENTHESIS)
+			{
+				while (ins && ins.peek() != RIGHT_PARENTHESIS)
+				{
+					if (isdigit(ins.peek()) || ins.peek() == DECIMAL)
+					{
+						ins >> number;
+						numbers.push(number);
+					}
+					else if (ins.peek() == '+' || ins.peek() == '-' || ins.peek() == '*' || ins.peek() == '/')
+					{
+						ins >> operation;
+						operators.push(operation);
+					}
+				}
+				evaluateExpression(numbers, operators);
+				evaluateExpression(numbers, operators);
+			}
+			else
+			{
+			
+				ins >> number;
+				numbers.push(number);
+				evaluateExpression(numbers, operators);
+			}
+		
+		}
+		else
+		{
+			ins.ignore();
+		}
+	}
+
+	while (!operators.empty())
+	{
+		if (numbers.size() >= 2)
 		{
 			evaluateExpression(numbers, operators);
 		}
 	}
+	
 
 	return numbers.top();
 }
