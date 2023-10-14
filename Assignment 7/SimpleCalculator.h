@@ -4,6 +4,7 @@
 using namespace std;
 
 string inputString(string prompt, bool spaces);
+void mainMenu();
 
 class SimpleCalculator
 {

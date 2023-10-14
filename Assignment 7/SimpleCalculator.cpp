@@ -1,5 +1,6 @@
 #include "SimpleCalculator.h"
 #include<string>
+#include<fstream>
 using namespace std;
 
 SimpleCalculator::SimpleCalculator()
@@ -93,73 +94,106 @@ double SimpleCalculator::displayCalculation(stack<double>& numbers, stack<char>&
 	const char DECIMAL = '.';
 	double number;
 	char operation;
+	char parenthesis;
+	stack<char> convert;
+	ofstream outFile;
+	ifstream inFile;
+	double test;
+
+	outFile.open("Store.txt");
+	inFile.open("Store.txt");
 
 	while (ins && ins.peek() != '\n')
 	{
-		if (isdigit(ins.peek()) || ins.peek() == DECIMAL)
+		if (ins.peek() == LEFT_PARENTHESIS)
 		{
-			ins >> number;
-			numbers.push(number);
+			ins >> parenthesis;
+			convert.push(parenthesis);
 		}
-		else if (ins.peek() == '+' || ins.peek() == '-')
-		{
-			ins >> operation;
-			operators.push(operation);
-		}
-		else if (ins.peek() == RIGHT_PARENTHESIS && !operators.empty())
+		else if (ins.peek() == ' ')
 		{
 			ins.ignore();
-			evaluateExpression(numbers, operators);
 		}
-		else if (ins.peek() == '*' || ins.peek() == '/')
+		else if (isdigit(ins.peek()) || ins.peek() == DECIMAL)
+		{
+			ins >> number;
+			outFile << number << endl;
+
+			//cout << "\n" << number << "\n";
+		}
+		else if (ins.peek() == '+' || ins.peek() == '-' || ins.peek() == '*' || ins.peek() == '/' || ins.peek() == '^')
 		{
 			ins >> operation;
-			operators.push(operation);
-			
+			convert.push(operation);
 
-			if (ins.peek() == LEFT_PARENTHESIS)
+			//cout << "\n" << operation << "\n";
+		}
+		else if (ins.peek() == RIGHT_PARENTHESIS)
+		{
+			ins.ignore();
+			if (convert.top() == '+' || convert.top() == '-' || convert.top() == '*' || convert.top() == '/' || convert.top() == '^')
 			{
-				while (ins && ins.peek() != RIGHT_PARENTHESIS)
+				outFile << convert.top() << endl;
+				convert.pop();
+
+			}
+			else if (convert.top() != '+' || convert.top() != '-' || convert.top() != '*' || convert.top() != '/' || convert.top() != '^')
+			{
+				cout << "\nNot enough operations\n";
+				system("pause");
+				system("cls");
+				mainMenu();
+			}
+			cout << convert.top();
+			if (convert.top() == LEFT_PARENTHESIS)
+			{
+				if (convert.empty())
 				{
-					if (isdigit(ins.peek()) || ins.peek() == DECIMAL)
-					{
-						ins >> number;
-						numbers.push(number);
-					}
-					else if (ins.peek() == '+' || ins.peek() == '-' || ins.peek() == '*' || ins.peek() == '/')
-					{
-						ins >> operation;
-						operators.push(operation);
-					}
+					cout << "empty";
 				}
-				evaluateExpression(numbers, operators);
-				evaluateExpression(numbers, operators);
+				else
+				{
+					convert.pop();
+				}
 			}
 			else
 			{
-			
-				ins >> number;
-				numbers.push(number);
-				evaluateExpression(numbers, operators);
+				cout << "\nParenthesis are not balanced\n";
+				system("pause");
+				system("cls");
+				mainMenu();
 			}
-		
+
+			//evaluateExpression(numbers, operators);
 		}
 		else
 		{
-			ins.ignore();
+			cout << "\nNot inputed correctly\n";
+			system("pause");
+			system("cls");
+			mainMenu();
 		}
+		
+		
+		
+		
+
+		
 	}
 
-	while (!operators.empty())
+	if (!convert.empty())
 	{
-		if (numbers.size() >= 2)
-		{
-			evaluateExpression(numbers, operators);
-		}
+		cout << "\nParenthesis not balanced\n";
 	}
-	
 
-	return numbers.top();
+	inFile >> test;
+
+	outFile.close();
+	inFile.close();
+
+	cout << test;
+
+	return test;
 }
 void SimpleCalculator::evaluateExpression(stack<double>& numbers, stack<char>& operators)
 {

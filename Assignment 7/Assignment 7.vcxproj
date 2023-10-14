@@ -134,6 +134,9 @@
     <ClInclude Include="input.h" />
     <ClInclude Include="SimpleCalculator.h" />
   </ItemGroup>
+  <ItemGroup>
+    <Text Include="Store.txt" />
+  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>
