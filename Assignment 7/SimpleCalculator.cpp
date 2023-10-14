@@ -103,6 +103,16 @@ double SimpleCalculator::displayCalculation(stack<double>& numbers, stack<char>&
 	outFile.open("Store.txt");
 	inFile.open("Store.txt");
 
+	if (ins.peek() == LEFT_PARENTHESIS)
+	{
+		ins >> parenthesis;
+		convert.push(parenthesis);
+	}
+	else if (ins.peek() != LEFT_PARENTHESIS)
+	{
+		cout << "\nParenthesis not balanced\n";
+	}
+
 	while (ins && ins.peek() != '\n')
 	{
 		if (ins.peek() == LEFT_PARENTHESIS)
@@ -144,8 +154,7 @@ double SimpleCalculator::displayCalculation(stack<double>& numbers, stack<char>&
 				system("cls");
 				mainMenu();
 			}
-			cout << convert.top();
-			if (convert.top() == LEFT_PARENTHESIS)
+			if (!convert.empty() && convert.top() == LEFT_PARENTHESIS  )
 			{
 				if (convert.empty())
 				{
@@ -184,6 +193,9 @@ double SimpleCalculator::displayCalculation(stack<double>& numbers, stack<char>&
 	if (!convert.empty())
 	{
 		cout << "\nParenthesis not balanced\n";
+		system("pause");
+		system("cls");
+		mainMenu();
 	}
 
 	inFile >> test;
