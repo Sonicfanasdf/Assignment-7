@@ -104,24 +104,10 @@ void SimpleCalculator::displayCalculation(stack<double>& numbers, stack<char>& o
 	double test;
 
 	outFile.open("Store.txt");
-	
-
-	if (ins.peek() == LEFT_PARENTHESIS)
-	{
-		ins >> parenthesis;
-		convert.push(parenthesis);
-	}
-	else if (ins.peek() != LEFT_PARENTHESIS)
-	{
-		cout << "\nParenthesis not balanced\n";
-		system("pause");
-		system("cls");
-
-
-	}
 
 	while (ins && ins.peek() != '\n')
 	{
+
 		if (ins.peek() == LEFT_PARENTHESIS)
 		{
 			ins >> parenthesis;
@@ -141,88 +127,137 @@ void SimpleCalculator::displayCalculation(stack<double>& numbers, stack<char>& o
 		else if (ins.peek() == '+' || ins.peek() == '-' || ins.peek() == '*' || ins.peek() == '/' || ins.peek() == '^')
 		{
 			ins >> operation;
+			while (!convert.empty() && convert.top() != LEFT_PARENTHESIS && getPrecendence(convert.top()) > getPrecendence(operation))
+			{
+				outFile << convert.top() << endl;
+				convert.pop();
+			}
+
 			convert.push(operation);
 
 			//cout << "\n" << operation << "\n";
 		}
-		else if (ins.peek() == RIGHT_PARENTHESIS)
+		else if (ins.peek() == RIGHT_PARENTHESIS && !convert.empty())
 		{
 			ins.ignore();
-			if (convert.top() == '+' || convert.top() == '-' || convert.top() == '*' || convert.top() == '/' || convert.top() == '^')
-			{
-				outFile << convert.top() << endl;
-				convert.pop();
 
-			}
-			else if (convert.top() != '+' || convert.top() != '-' || convert.top() != '*' || convert.top() != '/' || convert.top() != '^')
+			while (!convert.empty() && convert.top() != LEFT_PARENTHESIS  )
 			{
-				cout << "\nNot enough operations\n";
-				system("pause");
-				system("cls");
-				mainMenu();
+				operation = convert.top();
+
+				outFile << operation << endl;
+
+				convert.pop();
 			}
-			if (!convert.empty() && convert.top() == LEFT_PARENTHESIS  )
+			if (convert.empty())
 			{
-				if (convert.empty())
-				{
-					cout << "empty";
-				}
-				else
-				{
-					convert.pop();
-				}
+				cout << "Unbalanced Parenthesis\n";
 			}
 			else
 			{
-				cout << "\nParenthesis are not balanced\n";
-				system("pause");
-				system("cls");
-				mainMenu();
+				convert.pop();
 			}
-
-			
 		}
 		else
 		{
-			cout << "\nNot inputed correctly\n";
-			system("pause");
-			system("cls");
-			mainMenu();
+			cout << "Wrong input\n";
+			return;
 		}
-		
-		
-		
-		
-
-		
 	}
+			while (!convert.empty() && convert.top() != LEFT_PARENTHESIS)
+			{
+				operation = convert.top();
 
-	if (!convert.empty())
-	{
-		cout << "\nParenthesis nots balanced\n";
-		system("pause");
-		system("cls");
-		mainMenu();
-	}
+				outFile << operation << endl;
 
-	//inFile >> test;
+				convert.pop();
+			}
 
-	outFile.close();
-	//inFile.close();
+			if (!convert.empty())
+			{
+				cout << "Not balanced\n";
+			}
 
-	//cout << test;
+			evaluateExpression(numbers, operators);
 
-	evaluateExpression(numbers, operators);
+			answer = numbers.top();
 
-	answer = numbers.top();
+			cout << answer << endl;
+	//		if (convert.top() == '+' || convert.top() == '-' || convert.top() == '*' || convert.top() == '/' || convert.top() == '^')
+	//		{
+	//			outFile << convert.top() << endl;
+	//			convert.pop();
 
-	cout << answer;
+	//		}
+	//		else if (convert.top() != '+' || convert.top() != '-' || convert.top() != '*' || convert.top() != '/' || convert.top() != '^')
+	//		{
+	//			cout << "\nNot enough operations\n";
+	//			system("pause");
+	//			system("cls");
+	//			mainMenu();
+	//		}
+	//		if (!convert.empty() && convert.top() == LEFT_PARENTHESIS  )
+	//		{
+	//			if (convert.empty())
+	//			{
+	//				cout << "empty";
+	//			}
+	//			else
+	//			{
+	//				convert.pop();
+	//			}
+	//		}
+	//		else
+	//		{
+	//			cout << "\nParenthesis are not balanced\n";
+	//			system("pause");
+	//			system("cls");
+	//			mainMenu();
+	//		}
 
-	cout << endl;
+	//		
+	//	}
+	//	else
+	//	{
+	//		cout << "\nNot inputed correctly\n";
+	//		system("pause");
+	//		system("cls");
+	//		mainMenu();
+	//	}
+	//	
+	//	
+	//	
+	//	
+
+	//	
+	//}
+
+	//if (!convert.empty())
+	//{
+	//	cout << "\nParenthesis nots balanced\n";
+	//	system("pause");
+	//	system("cls");
+	//	mainMenu();
+	//}
+
+	////inFile >> test;
+
+	//outFile.close();
+	////inFile.close();
+
+	////cout << test;
+
+	//evaluateExpression(numbers, operators);
+
+	//answer = numbers.top();
+
+	//cout << answer;
+
+	//cout << endl;
 
 
-	system("pause");
-	system("cls");
+	//system("pause");
+	//system("cls");
 }
 void SimpleCalculator::evaluateExpression(stack<double>& numbers, stack<char>& operators)
 {
@@ -245,7 +280,7 @@ void SimpleCalculator::evaluateExpression(stack<double>& numbers, stack<char>& o
 		{
 			inFile.ignore();
 		}
-		else if (inFile.peek() == '+')
+		else if (inFile.peek() == '+' && numbers.size() >= 2)
 		{
 			inFile >> storeOp;
 
@@ -260,7 +295,7 @@ void SimpleCalculator::evaluateExpression(stack<double>& numbers, stack<char>& o
 			numbers.push(num1 + num2);
 
 		}
-		else if (inFile.peek() == '-')
+		else if (inFile.peek() == '-' && numbers.size() >= 2)
 		{
 			inFile >> storeOp;
 
@@ -274,7 +309,7 @@ void SimpleCalculator::evaluateExpression(stack<double>& numbers, stack<char>& o
 
 			numbers.push(num1 - num2);
 		}
-		else if (inFile.peek() == '*')
+		else if (inFile.peek() == '*' && numbers.size() >= 2)
 		{
 			inFile >> storeOp;
 
@@ -288,7 +323,7 @@ void SimpleCalculator::evaluateExpression(stack<double>& numbers, stack<char>& o
 
 			numbers.push(num1 * num2);
 		}
-		else if (inFile.peek() == '/')
+		else if (inFile.peek() == '/' && numbers.size() >= 2)
 		{
 			inFile >> storeOp;
 
@@ -302,7 +337,7 @@ void SimpleCalculator::evaluateExpression(stack<double>& numbers, stack<char>& o
 
 			numbers.push(num1 / num2);
 		}
-		else if (inFile.peek() == '^')
+		else if (inFile.peek() == '^' && numbers.size() >= 2)
 		{
 			inFile >> storeOp;
 
@@ -315,6 +350,11 @@ void SimpleCalculator::evaluateExpression(stack<double>& numbers, stack<char>& o
 
 
 			numbers.push(pow(num1, num2));
+		}
+		else if( numbers.size() < 2 && !inFile.eof())
+		{
+			cout << "Not complete";
+			break;
 		}
 	}
 
@@ -358,4 +398,19 @@ void SimpleCalculator::evaluateExpression(stack<double>& numbers, stack<char>& o
 	}
 
 	operators.pop();*/
+}
+int SimpleCalculator::getPrecendence(char operation)
+{
+	switch (operation)
+	{
+	case '+': return 1;
+		break;
+	case '-': return 1;
+		break;
+	case '*': return 2;
+		break;
+	case '/': return 2;
+		break;
+	case '^': return 3;
+	}
 }
