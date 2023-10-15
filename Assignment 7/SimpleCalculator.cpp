@@ -131,7 +131,7 @@ void SimpleCalculator::displayCalculation(stack<double>& numbers, stack<char>& o
 		else if (ins.peek() == '+' || ins.peek() == '-' || ins.peek() == '*' || ins.peek() == '/' || ins.peek() == '^')
 		{
 			ins >> operation;
-			while (!convert.empty() && convert.top() != LEFT_PARENTHESIS && getPrecendence(convert.top()) > getPrecendence(operation))
+			while (!convert.empty() && convert.top() != LEFT_PARENTHESIS && getPrecendence(convert.top()) >= getPrecendence(operation))
 			{
 				outFile << convert.top() << endl;
 				convert.pop();
@@ -326,8 +326,7 @@ void SimpleCalculator::evaluateExpression(stack<double>& numbers, stack<char>& o
 
 			num2 = numbers.top();
 			numbers.pop();
-
-
+			
 			num1 = numbers.top();
 			numbers.pop();
 
@@ -393,13 +392,17 @@ void SimpleCalculator::evaluateExpression(stack<double>& numbers, stack<char>& o
 		}
 		else if( numbers.size() < 2 && !inFile.eof())
 		{
-			cout << "Not complete";
+			cout << "Not complete\n\n";
+			system("pause");
+			system("cls");
+			mainMenu();
 			break;
 		}
 	}
 
 
 	inFile.close();
+
 
 		/*if (isdigit(inFile.peek()))
 		{
