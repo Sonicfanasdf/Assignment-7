@@ -16,7 +16,7 @@ int main()
 void mainMenu()
 {
 	SimpleCalculator calculator;
-
+	int choice;
 	do
 	{ 
 	cout << "\n\t CMPR131 Chapter 7: Applications using Stacks\n";
@@ -28,7 +28,9 @@ void mainMenu()
 	cout << "\t  0> Exit\n";
 	cout << "\t" << string(70, char(205)) << endl;
 
-	switch (inputInteger("\t  Option: ", 0, 3))
+	choice = inputInteger("\t  Option: ", 0, 3);
+
+	switch (choice)
 	{
 	case 0:
 	{
@@ -37,7 +39,6 @@ void mainMenu()
 	break;
 	case 1:
 	{
-		system("cls");
 		calculator.calculatorMenu();
 	}
 	break;
@@ -50,6 +51,7 @@ void mainMenu()
 	{
 		
 	}
+	break;
 	}
 	} while (true);
 }

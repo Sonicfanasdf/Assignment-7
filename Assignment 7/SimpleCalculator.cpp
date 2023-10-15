@@ -21,7 +21,9 @@ void SimpleCalculator::calculatorMenu()
 	stack<double> numbers;
 	stack<char> operators;
 	int number;
+	double answer;
 
+	system("cls");
 	cout << "\n\t1> Simple Calculator\n";
 	cout << string(100, char(196)) << endl;
 
@@ -38,12 +40,13 @@ void SimpleCalculator::calculatorMenu()
 		cout << "fail";
 	}*/
 	
+	cout << "Type a fully parenthesized arithmetic expression:\n\n";
 	
-	cout << endl << displayCalculation(numbers, operators, cin);
-	cout << endl;
+	displayCalculation(numbers, operators, cin, answer);
+	
+	
 
-	system("pause");
-	system("cls");
+	
 }
 //bool SimpleCalculator::checkParenthesis(const string& expression)
 //{
@@ -87,7 +90,7 @@ void SimpleCalculator::calculatorMenu()
 //
 //	return fail;
 //}
-double SimpleCalculator::displayCalculation(stack<double>& numbers, stack<char>& operators, istream& ins)
+void SimpleCalculator::displayCalculation(stack<double>& numbers, stack<char>& operators, istream& ins, double& answer)
 {
 	const char RIGHT_PARENTHESIS = ')';
 	const char LEFT_PARENTHESIS = '(';
@@ -97,11 +100,11 @@ double SimpleCalculator::displayCalculation(stack<double>& numbers, stack<char>&
 	char parenthesis;
 	stack<char> convert;
 	ofstream outFile;
-	ifstream inFile;
+	
 	double test;
 
 	outFile.open("Store.txt");
-	inFile.open("Store.txt");
+	
 
 	if (ins.peek() == LEFT_PARENTHESIS)
 	{
@@ -111,6 +114,10 @@ double SimpleCalculator::displayCalculation(stack<double>& numbers, stack<char>&
 	else if (ins.peek() != LEFT_PARENTHESIS)
 	{
 		cout << "\nParenthesis not balanced\n";
+		system("pause");
+		system("cls");
+
+
 	}
 
 	while (ins && ins.peek() != '\n')
@@ -173,7 +180,7 @@ double SimpleCalculator::displayCalculation(stack<double>& numbers, stack<char>&
 				mainMenu();
 			}
 
-			//evaluateExpression(numbers, operators);
+			
 		}
 		else
 		{
@@ -192,27 +199,135 @@ double SimpleCalculator::displayCalculation(stack<double>& numbers, stack<char>&
 
 	if (!convert.empty())
 	{
-		cout << "\nParenthesis not balanced\n";
+		cout << "\nParenthesis nots balanced\n";
 		system("pause");
 		system("cls");
 		mainMenu();
 	}
 
-	inFile >> test;
+	//inFile >> test;
 
 	outFile.close();
-	inFile.close();
+	//inFile.close();
 
-	cout << test;
+	//cout << test;
 
-	return test;
+	evaluateExpression(numbers, operators);
+
+	answer = numbers.top();
+
+	cout << answer;
+
+	cout << endl;
+
+
+	system("pause");
+	system("cls");
 }
 void SimpleCalculator::evaluateExpression(stack<double>& numbers, stack<char>& operators)
 {
 	double num1;
 	double num2;
+	double answer;
+	double storeNum;
+	char storeOp;
+	ifstream inFile;
 
-	num2 = numbers.top();
+	inFile.open("Store.txt");
+	while (!inFile.eof())
+	{
+		if (isdigit(inFile.peek()))
+		{
+			inFile >> storeNum;
+			numbers.push(storeNum);
+		}
+		else if (inFile.peek() == '\n')
+		{
+			inFile.ignore();
+		}
+		else if (inFile.peek() == '+')
+		{
+			inFile >> storeOp;
+
+			num2 = numbers.top();
+			numbers.pop();
+
+
+			num1 = numbers.top();
+			numbers.pop();
+
+
+			numbers.push(num1 + num2);
+
+		}
+		else if (inFile.peek() == '-')
+		{
+			inFile >> storeOp;
+
+			num2 = numbers.top();
+			numbers.pop();
+
+
+			num1 = numbers.top();
+			numbers.pop();
+
+
+			numbers.push(num1 - num2);
+		}
+		else if (inFile.peek() == '*')
+		{
+			inFile >> storeOp;
+
+			num2 = numbers.top();
+			numbers.pop();
+
+
+			num1 = numbers.top();
+			numbers.pop();
+
+
+			numbers.push(num1 * num2);
+		}
+		else if (inFile.peek() == '/')
+		{
+			inFile >> storeOp;
+
+			num2 = numbers.top();
+			numbers.pop();
+
+
+			num1 = numbers.top();
+			numbers.pop();
+
+
+			numbers.push(num1 / num2);
+		}
+		else if (inFile.peek() == '^')
+		{
+			inFile >> storeOp;
+
+			num2 = numbers.top();
+			numbers.pop();
+
+
+			num1 = numbers.top();
+			numbers.pop();
+
+
+			numbers.push(pow(num1, num2));
+		}
+	}
+
+	inFile.close();
+
+		/*if (isdigit(inFile.peek()))
+		{
+			inFile >> storeNum;
+			numbers.push(storeNum);
+		}
+	
+		cout << endl << storeNum;*/
+	/*num2 = numbers.top();
 	numbers.pop();
 
 	num1 = numbers.top();
@@ -242,5 +357,5 @@ void SimpleCalculator::evaluateExpression(stack<double>& numbers, stack<char>& o
 	break;
 	}
 
-	operators.pop();
+	operators.pop();*/
 }

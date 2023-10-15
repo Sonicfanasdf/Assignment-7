@@ -18,6 +18,6 @@ public:
 	string getExpression() const;
 	void calculatorMenu();
 	//bool checkParenthesis(const string& expression);
-	double displayCalculation(stack<double>& numbers, stack<char>& operators,istream& ins);
+	void displayCalculation(stack<double>& numbers, stack<char>& operators,istream& ins, double& answer);
 	void evaluateExpression(stack<double>& numbers, stack<char>& operators);
 };
