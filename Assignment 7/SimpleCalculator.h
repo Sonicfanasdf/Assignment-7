@@ -10,15 +10,12 @@ class SimpleCalculator
 {
 private:
 
-	string expression;
+	
 
 public:
 	SimpleCalculator();
-	void setExpression(string newString);
-	string getExpression() const;
 	void calculatorMenu();
-	//bool checkParenthesis(const string& expression);
-	void displayCalculation(stack<double>& numbers, stack<char>& operators,istream& ins, double& answer);
-	void evaluateExpression(stack<double>& numbers, stack<char>& operators);
+	void displayCalculation(stack<double>& numbers, istream& ins, double& answer);
+	void evaluateExpression(stack<double>& numbers);
 	int getPrecendence(char operation);
 };

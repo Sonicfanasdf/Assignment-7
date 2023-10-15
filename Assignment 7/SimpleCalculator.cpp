@@ -3,18 +3,15 @@
 #include<fstream>
 using namespace std;
 
+//Default Constructor
+//Precondition: NA
+//PostCondition: NA
 SimpleCalculator::SimpleCalculator()
 {
-	expression = "";
+	
 }
-void SimpleCalculator::setExpression(string newString)
-{
-	expression = newString;
-}
-string SimpleCalculator::getExpression() const
-{
-	return expression;
-}
+//Precondition: NA
+//Postcondition: Displays Calculator Menu
 void SimpleCalculator::calculatorMenu()
 {
 	SimpleCalculator calc;
@@ -26,71 +23,18 @@ void SimpleCalculator::calculatorMenu()
 	system("cls");
 	cout << "\n\t1> Simple Calculator\n";
 	cout << string(100, char(196)) << endl;
-
-	//calc.setExpression(inputString("\tType a fully parenthesized arithmetic expression:\n\n", true));
-
-	/*cout << isdigit(calc.getExpression()[1]);
-
-	number = calc.getExpression()[1];
-
-	cout << number;*/
-
-	/*if (checkParenthesis(calc.getExpression()))
-	{
-		cout << "fail";
-	}*/
 	
 	cout << "Type a parenthesized or non parenthesized arithmetic expression with postive integers or doubles:\n\n";
 	
-	displayCalculation(numbers, operators, cin, answer);
+	displayCalculation(numbers, cin, answer);
 	
 	
 
 	
 }
-//bool SimpleCalculator::checkParenthesis(const string& expression)
-//{
-//	const char LEFT_PARENTHESIS = '(';
-//	const char RIGHT_PARENTHESIS = ')';
-//	stack<char> check;
-//	char current;
-//	bool fail = false;
-//
-//	if (expression[0] != LEFT_PARENTHESIS)
-//	{
-//		fail = true;
-//	}
-//
-//	for (int i = 0; !fail && (i < expression.size()); i++)
-//	{
-//		current = expression[i];
-//
-//		if (current == LEFT_PARENTHESIS)
-//		{
-//			check.push(current);
-//		}
-//		else if (current == RIGHT_PARENTHESIS && !check.empty())
-//		{
-//			check.pop();
-//		}
-//		else if (current == RIGHT_PARENTHESIS && check.empty())
-//		{
-//			fail = true;
-//		}
-//	}
-//
-//	if (expression[expression.size() - 1] != RIGHT_PARENTHESIS)
-//	{
-//		fail = true;
-//	}
-//	else if (!check.empty())
-//	{
-//		fail = true;
-//	}
-//
-//	return fail;
-//}
-void SimpleCalculator::displayCalculation(stack<double>& numbers, stack<char>& operators, istream& ins, double& answer)
+//Precondition: A stack of doubles, user input with numbers that are positive, a double answer
+//Postcondition: Displays expression result
+void SimpleCalculator::displayCalculation(stack<double>& numbers, istream& ins, double& answer)
 {
 	const char RIGHT_PARENTHESIS = ')';
 	const char LEFT_PARENTHESIS = '(';
@@ -126,7 +70,6 @@ void SimpleCalculator::displayCalculation(stack<double>& numbers, stack<char>& o
 			storage.push(number);
 			outFile << number << endl;
 
-			//cout << "\n" << number << "\n";
 		}
 		else if (ins.peek() == '+' || ins.peek() == '-' || ins.peek() == '*' || ins.peek() == '/' || ins.peek() == '^')
 		{
@@ -139,7 +82,6 @@ void SimpleCalculator::displayCalculation(stack<double>& numbers, stack<char>& o
 
 			convert.push(operation);
 
-			//cout << "\n" << operation << "\n";
 		}
 		else if (ins.peek() == RIGHT_PARENTHESIS && !convert.empty())
 		{
@@ -155,7 +97,7 @@ void SimpleCalculator::displayCalculation(stack<double>& numbers, stack<char>& o
 			}
 			if (convert.empty())
 			{
-				cout << "Unbalanced Parenthesis\n";
+				cout << "ERROR: Unbalanced Parenthesis\n";
 				++errorCtr;
 				system("pause");
 				system("cls");
@@ -167,7 +109,7 @@ void SimpleCalculator::displayCalculation(stack<double>& numbers, stack<char>& o
 		}
 		else
 		{
-			cout << "Wrong input\n";
+			cout << "ERROR: Incorrect Expression Input\n";
 			++errorCtr;
 			++specialError;
 			system("pause");
@@ -190,7 +132,7 @@ void SimpleCalculator::displayCalculation(stack<double>& numbers, stack<char>& o
 
 			if (!convert.empty() && specialError == 0)
 			{
-				cout << "Not balanced\n";
+				cout << "ERROR: Unbalanced Parenthesis\n";
 				++errorCtr;
 				system("pause");
 				system("cls");
@@ -198,7 +140,7 @@ void SimpleCalculator::displayCalculation(stack<double>& numbers, stack<char>& o
 
 			if (storage.size() <= 1 && specialError == 0)
 			{
-				cout << "Incorrect\n";
+				cout << "ERROR: Incorrect Expression Input\n";
 				++errorCtr;
 				system("pause");
 				system("cls");
@@ -211,95 +153,17 @@ void SimpleCalculator::displayCalculation(stack<double>& numbers, stack<char>& o
 			}
 			else
 			{
-				evaluateExpression(numbers, operators);
+				evaluateExpression(numbers);
 				answer = numbers.top();
 
 				cout << "\nThe Expression Evaluates to: " << answer << endl;
 				system("pause");
 				system("cls");
 			}
-				
-			
-			
-
-			
-	//		if (convert.top() == '+' || convert.top() == '-' || convert.top() == '*' || convert.top() == '/' || convert.top() == '^')
-	//		{
-	//			outFile << convert.top() << endl;
-	//			convert.pop();
-
-	//		}
-	//		else if (convert.top() != '+' || convert.top() != '-' || convert.top() != '*' || convert.top() != '/' || convert.top() != '^')
-	//		{
-	//			cout << "\nNot enough operations\n";
-	//			system("pause");
-	//			system("cls");
-	//			mainMenu();
-	//		}
-	//		if (!convert.empty() && convert.top() == LEFT_PARENTHESIS  )
-	//		{
-	//			if (convert.empty())
-	//			{
-	//				cout << "empty";
-	//			}
-	//			else
-	//			{
-	//				convert.pop();
-	//			}
-	//		}
-	//		else
-	//		{
-	//			cout << "\nParenthesis are not balanced\n";
-	//			system("pause");
-	//			system("cls");
-	//			mainMenu();
-	//		}
-
-	//		
-	//	}
-	//	else
-	//	{
-	//		cout << "\nNot inputed correctly\n";
-	//		system("pause");
-	//		system("cls");
-	//		mainMenu();
-	//	}
-	//	
-	//	
-	//	
-	//	
-
-	//	
-	//}
-
-	//if (!convert.empty())
-	//{
-	//	cout << "\nParenthesis nots balanced\n";
-	//	system("pause");
-	//	system("cls");
-	//	mainMenu();
-	//}
-
-	////inFile >> test;
-
-	//outFile.close();
-	////inFile.close();
-
-	////cout << test;
-
-	//evaluateExpression(numbers, operators);
-
-	//answer = numbers.top();
-
-	//cout << answer;
-
-	//cout << endl;
-
-
-	//system("pause");
-	//system("cls");
 }
-void SimpleCalculator::evaluateExpression(stack<double>& numbers, stack<char>& operators)
+//Precondition:A stack of doubles for numbers
+//Postcondition: evaluates expression
+void SimpleCalculator::evaluateExpression(stack<double>& numbers)
 {
 	double num1;
 	double num2;
@@ -392,7 +256,7 @@ void SimpleCalculator::evaluateExpression(stack<double>& numbers, stack<char>& o
 		}
 		else if( numbers.size() < 2 && !inFile.eof())
 		{
-			cout << "Not complete\n\n";
+			cout << "ERROR: Incorrect input must be postive numbers\n\n";
 			system("pause");
 			system("cls");
 			mainMenu();
@@ -403,46 +267,9 @@ void SimpleCalculator::evaluateExpression(stack<double>& numbers, stack<char>& o
 
 	inFile.close();
 
-
-		/*if (isdigit(inFile.peek()))
-		{
-			inFile >> storeNum;
-			numbers.push(storeNum);
-		}
-	
-		cout << endl << storeNum;*/
-	/*num2 = numbers.top();
-	numbers.pop();
-
-	num1 = numbers.top();
-	numbers.pop();
-
-	switch (operators.top())
-	{
-	case '+':
-	{
-		numbers.push(num1 + num2);
-	}
-	break;
-	case '-':
-	{
-		numbers.push(num1 - num2);
-	}
-	break;
-	case '*':
-	{
-		numbers.push(num1 * num2);
-	}
-	break;
-	case '/':
-	{
-		numbers.push(num1 / num2);
-	}
-	break;
-	}
-
-	operators.pop();*/
 }
+//Precondition: a char operator
+//Postcondition: returns precendence value;
 int SimpleCalculator::getPrecendence(char operation)
 {
 	switch (operation)
