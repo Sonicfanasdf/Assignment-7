@@ -40,7 +40,7 @@ void SimpleCalculator::calculatorMenu()
 		cout << "fail";
 	}*/
 	
-	cout << "Type a fully parenthesized arithmetic expression:\n\n";
+	cout << "Type a parenthesized or non parenthesized arithmetic expression with postive integers or doubles:\n\n";
 	
 	displayCalculation(numbers, operators, cin, answer);
 	
@@ -99,7 +99,10 @@ void SimpleCalculator::displayCalculation(stack<double>& numbers, stack<char>& o
 	char operation;
 	char parenthesis;
 	stack<char> convert;
+	stack<double> storage;
 	ofstream outFile;
+	int errorCtr = 0;
+	int specialError = 0;
 	
 	double test;
 
@@ -120,6 +123,7 @@ void SimpleCalculator::displayCalculation(stack<double>& numbers, stack<char>& o
 		else if (isdigit(ins.peek()) || ins.peek() == DECIMAL)
 		{
 			ins >> number;
+			storage.push(number);
 			outFile << number << endl;
 
 			//cout << "\n" << number << "\n";
@@ -152,6 +156,9 @@ void SimpleCalculator::displayCalculation(stack<double>& numbers, stack<char>& o
 			if (convert.empty())
 			{
 				cout << "Unbalanced Parenthesis\n";
+				++errorCtr;
+				system("pause");
+				system("cls");
 			}
 			else
 			{
@@ -161,10 +168,18 @@ void SimpleCalculator::displayCalculation(stack<double>& numbers, stack<char>& o
 		else
 		{
 			cout << "Wrong input\n";
-			return;
+			++errorCtr;
+			++specialError;
+			system("pause");
+			system("cls");
+			while (ins.peek() != '\n')
+			{
+				ins.ignore();
+			}
+			break;
 		}
 	}
-			while (!convert.empty() && convert.top() != LEFT_PARENTHESIS)
+			while (!convert.empty() && convert.top() != LEFT_PARENTHESIS && specialError == 0)
 			{
 				operation = convert.top();
 
@@ -173,16 +188,41 @@ void SimpleCalculator::displayCalculation(stack<double>& numbers, stack<char>& o
 				convert.pop();
 			}
 
-			if (!convert.empty())
+			if (!convert.empty() && specialError == 0)
 			{
 				cout << "Not balanced\n";
+				++errorCtr;
+				system("pause");
+				system("cls");
 			}
 
-			evaluateExpression(numbers, operators);
+			if (storage.size() <= 1 && specialError == 0)
+			{
+				cout << "Incorrect\n";
+				++errorCtr;
+				system("pause");
+				system("cls");
+			}
+			
+			
+			if (errorCtr >= 1)
+			{
 
-			answer = numbers.top();
+			}
+			else
+			{
+				evaluateExpression(numbers, operators);
+				answer = numbers.top();
 
-			cout << answer << endl;
+				cout << "\nThe Expression Evaluates to: " << answer << endl;
+				system("pause");
+				system("cls");
+			}
+				
+			
+			
+
+			
 	//		if (convert.top() == '+' || convert.top() == '-' || convert.top() == '*' || convert.top() == '/' || convert.top() == '^')
 	//		{
 	//			outFile << convert.top() << endl;
@@ -357,6 +397,7 @@ void SimpleCalculator::evaluateExpression(stack<double>& numbers, stack<char>& o
 			break;
 		}
 	}
+
 
 	inFile.close();
 
